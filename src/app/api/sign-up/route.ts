@@ -9,10 +9,16 @@ export async function POST(request: Request) {
     try {
         const {username,email,password} = await request.json();
 
+        console.log(username,email,password);
+        
+
         const existingVerifiedUserByUsername = await UserModel.findOne({
             username,
             isverified: true
         });
+
+        console.log(existingVerifiedUserByUsername);
+        
 
         if (existingVerifiedUserByUsername) {
             return Response.json({
@@ -25,7 +31,11 @@ export async function POST(request: Request) {
         }
 
         const existingUserByEmail = await UserModel.findOne({email});
+        console.log(existingUserByEmail);
+        
         let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(verifyCode);
+        
 
         if (existingUserByEmail) {
             if (existingUserByEmail?.isverified) {
@@ -52,16 +62,18 @@ export async function POST(request: Request) {
             const expiryDate = new Date();
             expiryDate.setHours(expiryDate.getHours() + 1);
 
-            const newUser = new UserModel({
+            const newUser = await new UserModel({
                 username,
                 email,
-                password:hashPassword,
+                password:(await hashPassword).toString(),
                 verifyCode,
                 verifyCodeExpiry: expiryDate,
                 isverified: false,
                 isAcceptingMessage: true,
                 messages: [],
             });
+            
+            console.log(newUser);
             
             await newUser.save();
         }
@@ -73,7 +85,8 @@ export async function POST(request: Request) {
             email,
             verifyCode
         );
-
+            console.log(emailResponse.message);
+            
         if(!emailResponse.success){
             return (Response.json({
                 success: false,

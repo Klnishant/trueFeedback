@@ -2,7 +2,6 @@ import dbconnect from "@/lib/dbconnect";
 import UserModel from "@/model/User";
 import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
-import { URL } from "next/dist/compiled/@edge-runtime/primitives/url";
 
 const usernameQuerySchema = z.object({
     username: usernameValidation,
@@ -65,7 +64,7 @@ export async function GET (request: Request){
             },
         );
     } catch (error) {
-        console.error('Erroe checking username',error);
+        console.error('Error checking username',error);
 
         return Response.json(
             {

@@ -37,6 +37,8 @@ export default function verifyAccount(){
                 title:'success',
                 description:response?.data.message,
             });
+
+            router.replace('/sign-in')
         } catch (error) {
             const AxiosError = error as AxiosError<apiResponse>;
 
